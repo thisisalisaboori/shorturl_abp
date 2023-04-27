@@ -1,0 +1,53 @@
+﻿@page "/"
+@using Volo.Abp.MultiTenancy
+@inherits ShortUrlComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject ILinkApplicationService Appservice
+
+<div class="container">
+    <div class="p-5 text-center">
+        <Badge Color="Color.Success" class="mb-4">
+            <h5 class="m-1"> <i class="fas fa-rocket"></i> Congratulations, <strong>ShortUrl</strong> is successfully running!</h5>
+        </Badge>
+
+        <h1>Welcome to the Application</h1>
+
+        <p class="lead px-lg-5 mx-lg-5">@L["LongWelcomeMessage"]</p>
+
+        @if (!CurrentUser.IsAuthenticated)
+        {
+            <a class="btn btn-primary" href="Account/Login"><i class="fa fa-sign-in"></i> @L["Login"]</a>
+        }
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <input placeholder="input url"  @bind-value="@_inputurl" />
+                <code>@shorturl</code>  
+                <input type="button" value="send"  @onclick="InsertLink"/>
+            </div>
+        </div>
+    </div>
+
+    
+    
+    <div class="mb-5 text-center">
+        <p class="align-middle">
+            <a href="https://twitter.com/abpframework" target="_blank" class="mx-2"><i class="fab fa-twitter"></i><span class="text-secondary"> Abp Framework</span></a>
+            <a href="https://twitter.com/abpcommercial" target="_blank" class="mx-2"><i class="fab fa-twitter"></i><span class="text-secondary"> Abp Commercial</span></a>
+            <a href="https://github.com/abpframework/abp" target="_blank" class="mx-2"><i class="fab fa-github"></i><span class="text-secondary"> abpframework</span></a>
+        </p>
+    </div>
+</div>
+
+@code{
+    private string _inputurl,shorturl;
+     
+    private async void InsertLink()
+    {
+       var res= await  Appservice.Create(new CreateLink() {Url =_inputurl});
+       shorturl = res.ShortUrl;
+    }
+}
